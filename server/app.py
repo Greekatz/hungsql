@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from dbengine import execute_query
+from dbengine import DatabaseEngine
 
 app = FastAPI()
 security = HTTPBasic()
@@ -23,10 +23,10 @@ async def run_query(request: Request, username: str = Depends(authenticate)):
         if not query:
             raise HTTPException(status_code=400, detail="Query parameter missing")
         
-        result = execute_query(query)
+        result = DatabaseEngine().execute_query(query)
         return result
     except ValueError as e:
-        print(f"SQL Error: {e}")  # Debug SQL issues
+        print(f"SQL Error: {e}")  
         raise HTTPException(status_code=400, detail=str(e))
     
 

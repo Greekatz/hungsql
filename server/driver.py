@@ -1,6 +1,13 @@
 import requests
 import json
 from abc import ABC, abstractmethod
+import datetime
+
+STRING = str
+BINARY = bytes
+NUMBER = float
+DATETIME = datetime.datetime
+ROWID = int
 
 
 # Abstract Transport Layer
@@ -30,6 +37,7 @@ class HTTPTransport(Transport):
 
 class Cursor:
     def __init__(self, transport: Transport):
+        self.arraysize = 1
         self.transport = transport
         self._results = []
         self._row_index = 1
@@ -43,15 +51,10 @@ class Cursor:
         self._has_results = bool(self._results)
 
         if self._has_results:
-            headers = self._results[0]
             self.description = [
-                (col, str, None, None, None, None, None)
-                for col in headers
+                (col, STRING, None, None, None, None, None)
+                for col in self._results[0]
             ]
-            self.rowcount = len(self._results) - 1  # exclude header
-        else:
-            self.description = None
-            self.rowcount = -1
 
     def fetchone(self):
         if not self._has_results:

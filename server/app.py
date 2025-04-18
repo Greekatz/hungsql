@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from dbengine import DatabaseEngine
+from server.dbengine import DatabaseEngine
 
 app = FastAPI()
 security = HTTPBasic()

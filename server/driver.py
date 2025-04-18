@@ -33,9 +33,8 @@ class Cursor:
         self.transport = transport
         self._results = []
 
-    def execute(self, sql, params=None):
-        response = self.transport.post_query(sql)
-        self._results = response.get("rows", [])
+    def execute(self, sql):
+        self._results = self.transport.post_query(sql)
 
     def fetchall(self):
         return self._results

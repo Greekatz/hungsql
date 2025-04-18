@@ -1,13 +1,16 @@
 from server.driver import connect
 
-conn = connect("http://localhost:8000", username="admin", password="1234")
+# Connect to the database
+conn = connect("http://localhost:8000")
 cursor = conn.cursor()
 
-cursor.execute("SELECT * FROM users WHERE age > 24")
-rows = cursor.fetchall()
+# Execute a query
+cursor.execute("SELECT name, age FROM users WHERE name = 184")
 
-for row in rows:
-    print(row)
+
+results = cursor.fetchall()
+print(results)
+
 
 cursor.close()
 conn.close()

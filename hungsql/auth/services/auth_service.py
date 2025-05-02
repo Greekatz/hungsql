@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from hungsql.auth.hashing import Hash
 from hungsql.auth.utils.token import create_access_token, create_refresh_token
-from hungsql.auth.repositories.user import UserRepository
+from hungsql.auth.repositories.user_repository import UserRepository
 from hungsql.auth.schemas.token import Token
 
 
@@ -22,7 +22,7 @@ class AuthService:
         Raises:
             HTTPException 401 – if user not found or password mismatch.
         """
-        user = self.user_repo.get_user_by_email(email)
+        user = await self.user_repo.get_user_by_email(email)
         if not user or not Hash.verify(user["password"], password):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

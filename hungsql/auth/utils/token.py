@@ -17,7 +17,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # Create access token
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None) -> str:
-    to_encode = data.model_copy()
+    to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:

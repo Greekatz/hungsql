@@ -1,7 +1,7 @@
 import pytest
 from fastapi import HTTPException
 
-from hungsql.auth.services.auth import AuthService
+from hungsql.auth.services.auth_service import AuthService
 from hungsql.auth.schemas.token import Token
 
 # These must match an entry in key/credentials.json

@@ -1,5 +1,5 @@
 from lark import Lark
-from grammar.Transformer import SQLTransformer
+from grammar.transformer import SQLTransformer
 
 # Load your grammar from file
 with open("./grammar/sql_grammar.lark", "r") as f:
@@ -16,7 +16,9 @@ test_queries = [
     "select u.id, u.name from users as u where u.age > 25 and u.status is not null;",
     "select id, name from users where (age < 30 or salary > 50000) and name = 'Alice';",
     "select id, name from users where join_date >= '2023-01-01';",
-    
+    "select name, name from users where '1' = 1;",
+    "select name, name from users where 1 = 1;",
+
     # Invalid queries (should raise an error)
     "select * from where id = 1;",  # Missing table name
     "select id, name from users where id =;",  # Missing value

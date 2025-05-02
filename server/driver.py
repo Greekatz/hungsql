@@ -3,11 +3,6 @@ import json
 from abc import ABC, abstractmethod
 import datetime
 
-STRING = str
-BINARY = bytes
-NUMBER = float
-DATETIME = datetime.datetime
-ROWID = int
 
 
 # Abstract Transport Layer
@@ -23,6 +18,7 @@ class HTTPTransport(Transport):
         self.username = username
         self.password = password
 
+   
     def post_query(self, sql: str) -> dict:
         payload = {"query": sql}
         response = requests.post(
@@ -37,13 +33,18 @@ class HTTPTransport(Transport):
 
 class Cursor:
     def __init__(self, transport: Transport):
-        self.arraysize = 1
         self.transport = transport
-        self._results = []
-        self._row_index = 1
-        self._has_results = False
         self.description = None
-        self.rowcount = -1
+        self.row_count = -1
+        self.array_size = 1
+
+        # Internal state
+        self._results = []
+        self._row_index = 0
+
+        # custom attributes
+        self.name = None
+        self.type_code = None
 
     def execute(self, sql, params=None):
         self._results = self.transport.post_query(sql)
@@ -52,17 +53,18 @@ class Cursor:
 
         if self._has_results:
             self.description = [
-                (col, STRING, None, None, None, None, None)
+                (col, str, None, None, None, None, None)
                 for col in self._results[0]
             ]
+    
 
     def fetchone(self):
         if not self._has_results:
-            raise Exception("No result set available. Did you forget to call .execute()?")
-
+            raise Exception("No result set available.")
+        
         if self._row_index >= len(self._results):
             return None
-
+        
         row = self._results[self._row_index]
         self._row_index += 1
         return row
@@ -70,7 +72,8 @@ class Cursor:
     def fetchall(self):
         if not self._has_results:
             raise Exception("No result set available.")
-        return self._results[1:]  # skip header row
+        return self._results[1:]
+    
 
     def __iter__(self):
         return self

@@ -5,17 +5,17 @@ conn = connect("http://localhost:8000")
 cursor = conn.cursor()
 
 # # Execute a query
-cursor.execute("SELECT name, age FROM users WHERE name = Alice")
+cursor.execute("SELECT * FROM users")
 
 row = cursor.fetchone()
 while row:
     print(row)
     row = cursor.fetchone()
 
-cursor.execute("SELECT name, age FROM users WHERE age < 20")
+# cursor.execute("SELECT users.name, orders.product FROM users JOIN orders ON users.id = orders.user_id")
 
-results = cursor.fetchall()
-print(results)
+# results = cursor.fetchall()
+# print(results)
 
 cursor.close()
 conn.close()

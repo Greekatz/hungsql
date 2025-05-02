@@ -1,3 +1,4 @@
+
 import csv
 import os
 import re
@@ -138,22 +139,26 @@ class QueryCondition:
 
 class QueryParser:
     SQL_PATTERN: Pattern = re.compile(
-        r"SELECT\s+(.+?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.+))?$", 
+        r"SELECT\s+(.+?)\s+FROM\s+(\w+)(?:\s+JOIN\s+(\w+)\s+ON\s+([\w.]+)\s*=\s*([\w.]+))?(?:\s+WHERE\s+(.+))?$",
         re.IGNORECASE
     )
     
     @classmethod
-    def parse(cls, sql: str) -> Tuple[List[str], str, Optional[str]]:
-        """Parse SQL query into components with validation"""
+    def parse(cls, sql: str) -> Tuple[list, str, Optional[tuple], Optional[str]]:
         match = cls.SQL_PATTERN.match(sql.strip())
         if not match:
             raise ValueError("Invalid SQL query format")
         
         columns = [col.strip() for col in match.group(1).split(",")]
         table = match.group(2)
-        where_clause = match.group(3)
         
-        return columns, table, where_clause
+        # Make JOIN info optional
+        join_table = match.group(3)
+        join_condition = (join_table, match.group(4), match.group(5)) if join_table else None
+        
+        where_clause = match.group(6)
+        
+        return columns, table, join_condition, where_clause
 
 class DatabaseEngine:
     def __init__(self, db_directory: str = "db"):
@@ -162,22 +167,25 @@ class DatabaseEngine:
     
     def execute_query(self, sql: str) -> List[List[str]]:
         """Execute SQL query and return results with header row"""
-        columns, table_name, where_clause = QueryParser.parse(sql)
-        table = Table(table_name, self.db_directory)
-        
-        try:
-            rows = table.load_data()
-            schema = table.infer_schema()
-            
-            if where_clause:
-                condition = QueryCondition(where_clause, schema)
-                rows = condition.apply(rows)
-            
-            result_columns = self._determine_output_columns(columns, rows)
-            return self._format_results(result_columns, rows)
-            
-        except Exception as e:
-            raise RuntimeError(f"Query execution failed: {str(e)}")
+        columns, table_name, join_info, where_clause = QueryParser.parse(sql)
+
+        # Handle JOIN if present
+        if join_info:
+            join_table, left_key, right_key = join_info
+            rows = self._perform_join(table_name, join_table, left_key, right_key)
+        else:
+            # Regular single-table query
+            rows = Table(table_name, self.db_directory).load_data()
+
+        # Apply WHERE clause (existing logic)
+        if where_clause:
+            schema = Table(table_name, self.db_directory).infer_schema()
+            condition = QueryCondition(where_clause, schema)
+            rows = condition.apply(rows)
+
+        # Format results (existing logic)
+        result_columns = self._determine_output_columns(columns, rows)
+        return self._format_results(result_columns, rows)
     
     def _determine_output_columns(self, 
                                 requested_columns: List[str], 
@@ -206,3 +214,26 @@ class DatabaseEngine:
         
         formatted_rows = [[row.get(col, "") for col in columns] for row in rows]
         return [columns] + formatted_rows
+
+
+    def _perform_join(self, left_table: str, right_table: str, left_key: str, right_key: str) -> List[Dict[str, str]]:
+        """Inner JOIN"""
+        left_data = Table(left_table, self.db_directory).load_data()
+        right_data = Table(right_table, self.db_directory).load_data()
+
+        left_key_clean = left_key.split(".")[-1]
+        right_key_clean = right_key.split(".")[-1]
+
+        right_lookup = {}
+        for row in right_data:
+            key = row[right_key_clean]
+            right_lookup[key] = row
+        
+        # Perform JOIN
+        joined_rows = []
+        for left_row in left_data:
+            key = left_row[left_key_clean]
+            if key in right_lookup:
+                merged_row = {**left_row, **right_lookup[key]}
+                joined_rows.append(merged_row)
+        return joined_rows

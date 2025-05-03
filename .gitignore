@@ -1,0 +1,48 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environment
+.venv/
+.env/
+env/
+venv/
+
+# VS Code or PyCharm settings (optional)
+.vscode/
+.idea/
+
+# Environment variables
+.env
+*.env
+
+# Pytest cache
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+
+# SQLite DBs or test output
+*.db
+*.sqlite3
+*.log
+
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# Your custom data
+key/credentials.json
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Ignore database if generated during test runs
+db/

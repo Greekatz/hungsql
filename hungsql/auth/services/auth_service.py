@@ -1,4 +1,5 @@
-# app/services/auth_service.py
+import asyncio
+
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -37,3 +38,6 @@ class AuthService:
             refresh_token=refresh_token,
             token_type="bearer",
         )
+    
+    def sync_authenticate_user(self, email: str, password: str) -> Token:
+        return asyncio.run(self.authenticate_user(email=email, password=password))

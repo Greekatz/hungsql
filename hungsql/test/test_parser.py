@@ -1,38 +1,22 @@
-from lark import Lark
-
+import pytest
+from hungsql.sql.grammar.parser import sql_parser
 from hungsql.sql.transformer import SQLTransformer
+from lark.exceptions import LarkError
 
-with open ('./hungsql/sql/grammar/sql_grammar.lark', 'r') as f:
-    sql_grammar = f.read()
-# Create the parser
-parser = Lark(sql_grammar, start="start", parser="lalr")
-
-# Example usage
-if __name__ == "__main__":
-    test_queries = [
-    # Valid queries
+@pytest.mark.parametrize("sql", [
     "select * from users;",
-    "select id,name from users where id = 1;",
-    "select id, name from users where age < 30  and name = 'Alice';",
-    "select id, name from users where join_date >= '2023-01-01';",
-    "select name, name from users where '1' = 1;",
-    "select name, name from users where 1 = 1;",
+    "select id, name from users where 1 = 1;",
+    "select id from users where age > 18 and name = 'Alice';",
+])
+def test_valid_queries(sql):
+    tree = sql_parser.parse(sql)
+    ast = SQLTransformer().transform(tree)
+    assert isinstance(ast, dict)
 
-    # Invalid queries (should raise an error)
-    "select * from where id = 1;",  # Missing table name
-    "select id, name from users where id =;",  # Missing value
-    "select id, name users where id = 1;",  # Missing FROM
-    ]
-
-
-    for query in test_queries:
-        print(f"\nParsing: {query}")
-        try:
-            result = parser.parse(query)
-            transformer = SQLTransformer()
-            ast = transformer.transform(result)
-            print("Result:")
-            import pprint
-            pprint.pprint(ast, indent=2)
-        except Exception as e:
-            print(f"Error: {e}")
+@pytest.mark.parametrize("sql", [
+    "select from users;",
+    "select id, name users where id = 1;",
+])
+def test_invalid_queries(sql):
+    with pytest.raises(LarkError):
+        sql_parser.parse(sql)

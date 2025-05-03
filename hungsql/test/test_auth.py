@@ -5,8 +5,8 @@ from hungsql.auth.services.auth_service import AuthService
 from hungsql.auth.schemas.token import Token
 
 # These must match an entry in key/credentials.json
-TEST_EMAIL = "admin@example.com"
-TEST_PASSWORD = "secret"
+TEST_EMAIL = "user231@example.com"
+TEST_PASSWORD = "SecurePass123123"
 WRONG_PASSWORD = "wrongpass"
 
 @pytest.mark.asyncio

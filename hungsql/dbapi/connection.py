@@ -12,7 +12,7 @@ class Connection:
         self.tables: Dict[str, List[dict]] = self._load_tables()
 
     def _load_tables(self) -> Dict[str, List[dict]]:
-        base_path = Path(__file__).resolve().parent.parent / "db" / self.schema
+        base_path = Path(__file__).resolve().parents[2] / "db" / self.schema
         if not base_path.exists():
             raise FileNotFoundError(f"Schema folder '{self.schema}' not found at: {base_path}")
 

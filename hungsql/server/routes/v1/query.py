@@ -6,10 +6,15 @@ from hungsql.server.services.query_service import QueryService
 router = APIRouter(prefix="/v1/query", tags=["query"])
 service = QueryService()
 
-@router.post("/", response_model=QueryResponse)
-def run_query(request: QueryRequest):
-    try:
-        return service.execute_sql(token=request.token, sql=request.sql, dsn=request.dsn)
-    except Exception as e:
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/one", response_model=QueryResponse)
+def fetch_one(request: QueryRequest):
+    return service.fetch_one(token=request.token, sql=request.sql, dsn=request.dsn)
+
+@router.post("/many", response_model=QueryResponse)
+def fetch_many(request: QueryRequest):
+    return service.fetch_many(token=request.token, sql=request.sql, dsn=request.dsn)
+
+@router.post("/all", response_model=QueryResponse)
+def fetch_all(request: QueryRequest):
+    return service.fetch_all(token=request.token, sql=request.sql, dsn=request.dsn)

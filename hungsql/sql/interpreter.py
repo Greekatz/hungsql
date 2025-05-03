@@ -62,6 +62,7 @@ class SQLInterpreter:
         else:
             right = right_raw
 
+
         match op:
             case "=": return left == right
             case "!=": return left != right

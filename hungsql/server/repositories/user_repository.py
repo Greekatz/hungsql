@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from typing import Optional
-from hungsql.auth.schemas.user import UserCreate, UserOut
+from hungsql.server.schemas.user import UserCreate, UserOut
 
 CREDENTIALS_FILE = Path(__file__).resolve().parents[2] / "key" / "credentials.json"
 

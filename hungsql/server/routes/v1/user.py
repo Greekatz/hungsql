@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from hungsql.auth.schemas.user import UserCreate, UserOut
-from hungsql.auth.services.user_service import UserService
+from hungsql.server.schemas.user import UserCreate, UserOut
+from hungsql.server.services.user_service import UserService
 
 router = APIRouter(prefix="/v1/users", tags=["users"])
 

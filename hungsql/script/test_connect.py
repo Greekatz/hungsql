@@ -7,7 +7,7 @@ from hungsql.dbapi import connect
 
 
 def main():
-    conn = connect(dsn="schema1", user="user231@example.com", password="SecurePass123123")
+    conn = connect(dsn="schema1", username="user@example.com", password="User12345pass")
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE 1 = 1;")
     print(cursor.fetchone())

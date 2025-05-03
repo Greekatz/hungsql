@@ -2,7 +2,7 @@ from typing import Optional
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from hungsql.auth.utils.token import verify_token
+from hungsql.server.utils.token import verify_token
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

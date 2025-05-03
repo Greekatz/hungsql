@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 from fastapi import HTTPException, status
 
-from hungsql.auth.hashing import Hash
-from hungsql.auth.repositories.user_repository import UserRepository
-from hungsql.auth.schemas.user import UserCreate, UserOut
+from hungsql.server.hashing import Hash
+from hungsql.server.repositories.user_repository import UserRepository
+from hungsql.server.schemas.user import UserCreate, UserOut
 
 
 class UserService:

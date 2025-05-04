@@ -7,7 +7,7 @@ class Cursor:
         self.tables = tables
         self._results: list[tuple] = []
         self._description: list[tuple] = []
-        self._index = 0
+        self._position = 0  # for pagination tracking
 
     @property
     def description(self):
@@ -20,37 +20,36 @@ class Cursor:
     def execute(self, sql: str):
         tree = sql_parser.parse(sql)
         ast = SQLTransformer().transform(tree)
-        raw_rows = SQLInterpreter(self.tables).execute(ast)
+        query = SQLInterpreter(self.tables).execute(ast)
 
-        self._index = 0 
-
-        if not raw_rows:
+        if not query:
             self._results = []
             self._description = []
-            return self
+            return
 
-        columns = list(raw_rows[0].keys())
-        self._results = [tuple(row[col] for col in columns) for row in raw_rows]
+        columns = list(query[0].keys())
+        self._results = [tuple(row[col] for col in columns) for row in query]
         self._description = [(col, None, None, None, None, None, None) for col in columns]
+        self._position = 0  # reset pagination
 
     def fetchmany(self, size=1000):
-        result = self._results[self._index:self._index + size]
-        self._index += len(result)
-        return result
+        chunk = self._results[self._position:self._position + size]
+        self._position += len(chunk)
+        return chunk
 
-    def fetchall(self):
-        result = self._results[self._index:]
-        self._index = len(self._results)
-        return result
+    def fetchall(self, page: int = 1, size: int = 1000):
+        start = (page - 1) * size
+        end = start + size
+        return self._results[start:end]
 
     def fetchone(self):
-        if self._index < len(self._results):
-            row = self._results[self._index]
-            self._index += 1
+        if self._position < len(self._results):
+            row = self._results[self._position]
+            self._position += 1
             return row
         return None
 
     def close(self):
-        self._index = 0
         self._results = []
         self._description = []
+        self._position = 0

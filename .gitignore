@@ -37,7 +37,7 @@ coverage.xml
 Thumbs.db
 
 # Your custom data
-key/credentials.json
+hungsql/key/credentials.json
 
 # Distribution / packaging
 build/

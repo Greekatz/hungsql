@@ -3,10 +3,10 @@ import asyncio
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hungsql.auth.hashing import Hash
-from hungsql.auth.utils.token import create_access_token, create_refresh_token
-from hungsql.auth.repositories.user_repository import UserRepository
-from hungsql.auth.schemas.token import Token
+from hungsql.server.hashing import Hash
+from hungsql.server.utils.token import create_access_token, create_refresh_token
+from hungsql.server.repositories.user_repository import UserRepository
+from hungsql.server.schemas.token import Token
 
 
 class AuthService:

@@ -8,7 +8,8 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
+      - ./db:/app/db
     environment:
       - PYTHONUNBUFFERED=1
       - ENV=development
-    command: uvicorn hungsql.api.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn hungsql.server.main:app --host 0.0.0.0 --port 8000 --reload

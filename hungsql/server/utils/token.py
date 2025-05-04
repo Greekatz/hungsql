@@ -5,7 +5,7 @@ from jose import JWTError, jwt
 from dotenv import load_dotenv
 
 from fastapi import HTTPException, status
-from hungsql.auth.schemas.token import TokenData
+from hungsql.server.schemas.token import TokenData
 from dotenv import load_dotenv
 import os
 

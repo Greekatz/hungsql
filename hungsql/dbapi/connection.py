@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from hungsql.dbapi.cursor import Cursor
+from hungsql.dbapi.exceptions import NotSupportedError
 
 class Connection:
     def __init__(self, user_email: str, token: Optional[str] = None, dsn: str = "schema1"):
@@ -35,4 +36,8 @@ class Connection:
 
     def cursor(self) -> Cursor:
         return Cursor(self.tables)
+    
+    def rollback(self):
+        raise NotSupportedError("rollback() is currently not supported")
+
     

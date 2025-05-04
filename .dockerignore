@@ -8,3 +8,14 @@ __pycache__/
 *.db
 .pytest_cache/
 .key/
+
+# IDE
+.vscode/
+.idea/
+
+.git/
+.gitignore
+LICENSE
+*.yml
+docker-compose.*
+pyproject.toml

@@ -2,11 +2,16 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy your code and dependencies
+
+# Install OS dependencies
+RUN apt-get update && apt-get install -y build-essential
+
+
 COPY . .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install build tools and your package
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install 
 
 
 # Expose port for FastAPI

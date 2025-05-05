@@ -1,0 +1,39 @@
+start: select_statement 
+
+select_statement: "SELECT"i column_list "FROM"i table_name [where_clause]";"
+
+column_list: ASTERISK | column_name ("," column_name)*
+
+column_name: CNAME
+table_name: CNAME
+
+ASTERISK: "*"
+
+where_clause: "WHERE"i condition
+
+condition: expression
+
+expression: comparison_expression
+       | expression "AND"i expression -> and_expr
+       | expression "OR"i expression  -> or_expr
+
+comparison_expression: operand COMPARISON_OP operand
+                     | operand "IS"i "NULL"i         -> is_null
+                     | operand "IS"i "NOT"i "NULL"i   -> is_not_null
+
+SINGLE_QUOTED_STRING: /'(?:[^'\\]|\\.)*'/
+
+operand: CNAME
+       | SIGNED_NUMBER
+       | ESCAPED_STRING
+       | "NULL"
+       | SINGLE_QUOTED_STRING
+
+COMPARISON_OP: ">" | "<" | "=" | ">=" | "<=" | "!=" | "<>" | "LIKE"
+
+
+%import common.CNAME
+%import common.ESCAPED_STRING
+%import common.SIGNED_NUMBER
+%import common.WS
+%ignore WS

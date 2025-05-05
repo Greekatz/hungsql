@@ -44,5 +44,3 @@ build/
 dist/
 *.egg-info/
 
-# Ignore database if generated during test runs
-db/

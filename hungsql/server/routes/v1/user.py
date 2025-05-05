@@ -1,9 +1,0 @@
-from fastapi import APIRouter
-from hungsql.server.schemas.user import UserCreate, UserOut
-from hungsql.server.services.user_service import UserService
-
-router = APIRouter(prefix="/v1/users", tags=["users"])
-
-@router.post("/", response_model=UserOut)
-async def register(user: UserCreate):
-    return await UserService().create_user(user)

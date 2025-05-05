@@ -1,5 +1,6 @@
-import traceback
-from fastapi import APIRouter, HTTPException
+
+from fastapi import APIRouter
+
 from hungsql.server.schemas.query import QueryRequest, QueryResponse
 from hungsql.server.services.query_service import QueryService
 

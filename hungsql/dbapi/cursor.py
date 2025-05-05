@@ -37,17 +37,16 @@ class Cursor:
         self._position += len(chunk)
         return chunk
 
-    def fetchall(self, page: int = 1, size: int = 1000):
-        start = (page - 1) * size
-        end = start + size
-        return self._results[start:end]
-
     def fetchone(self):
         if self._position < len(self._results):
             row = self._results[self._position]
             self._position += 1
             return row
         return None
+    
+    def fetchall(self):
+        return self._results
+
 
     def close(self):
         self._results = []
